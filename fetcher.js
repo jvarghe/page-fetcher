@@ -41,3 +41,25 @@
  */
 
 
+// IMPORTS
+const request = require("request");
+const fs = require("fs");
+
+// GLOBAL STATE
+let url;
+let filepath;
+
+
+const captureCLIData = function() {
+
+  const cliArguments = process.argv.splice(2);
+
+  url = cliArguments[0];
+  filepath = cliArguments[1];
+  // console.log(url, filepath);
+
+};
+
+
+// DRIVER CODE
+captureCLIData();
