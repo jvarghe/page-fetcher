@@ -30,7 +30,7 @@
  * PSEUDOCODE
  *
  *   * When the program starts, you need to collect CLI information: the URL
- *     and the local file path where the response body will be saved. Create
+ *     and the local file path where the response will be saved. Create
  *     variables for both of these.
  *
  *   * Create a method that will make the request, and collect and store the
@@ -43,23 +43,41 @@
 
 // IMPORTS
 const request = require("request");
-const fs = require("fs");
-
-// GLOBAL STATE
-let url;
-let filepath;
 
 
-const captureCLIData = function() {
+const saveResponseBodyToFile = function() {
 
+  // CAPTURE AND SORT CLI DATA
   const cliArguments = process.argv.splice(2);
+  const url = cliArguments[0];
+  const filePath = cliArguments[1];
 
-  url = cliArguments[0];
-  filepath = cliArguments[1];
-  // console.log(url, filepath);
+
+  // CALLBACK 1: INVOKE THE REQUEST FUNCTION
+  // Make a request for the given URL using the `request()` function.
+  request(url, (error, response, body) => {
+
+    // Error Handling: Print the error(s) if one occurred.
+    if (error === true) {
+      console.log(`request() Error: ${error}`);
+
+      // If the request goes through...
+    } else {
+
+      // Print the response status code if a response was received.
+      console.log("statusCode:", response && response.statusCode);
+
+      // Print the HTML for the URL to console.
+      console.log("Response Body:", body);
+
+    }
+
+  });
 
 };
 
 
+
 // DRIVER CODE
-captureCLIData();
+saveResponseBodyToFile(request);
+
