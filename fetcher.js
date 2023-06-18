@@ -33,19 +33,21 @@
  *     and the local file path where the response will be saved. Create
  *     variables for both of these.
  *
- *   * Create a method that will make the request, and collect and store the
- *     response object.
+ *   * Call the Request Callback that will make the request, and collect and
+ *     store the response object.
  *
- *   * Within the first method, nest a callback that will asynchronously create
- *     and write a file on the local filesystem.
+ *   * Within the first callback, nest a second `writeFile()` callback that
+ *     will asynchronously create and write a file on the local filesystem.
+ *
  */
 
 
 // IMPORTS
 const request = require("request");
+const fs = require("fs");
 
 
-const saveResponseBodyToFile = function() {
+const saveNetworkResourceToFile = function() {
 
   // CAPTURE AND SORT CLI DATA
   const cliArguments = process.argv.splice(2);
@@ -65,11 +67,31 @@ const saveResponseBodyToFile = function() {
     } else {
 
       // Print the response status code if a response was received.
-      console.log("statusCode:", response && response.statusCode);
+      // console.log("Response Status Code:", response && response.statusCode);
 
       // Print the HTML for the URL to console.
-      console.log("Response Body:", body);
+      // console.log("Response Body:", body);
 
+
+
+      // CALLBACK 2: WRITE THE RESPONSE BODY TO A FILE
+      // Write the retrieved resource to a file on the local computer.
+      fs.writeFile(filePath, body, (error) => {
+
+        // If there is an error, log it to the terminal.
+        if (error === true) {
+          console.log(`writeFile() Error: ${error}`);
+
+          // If there are no errors...
+        } else {
+
+          // Log results to console:
+          console.log(`Downloaded Requested Resource and Saved it to ${filePath}!`);
+          console.log(`The file is ${body.length} bytes.`);
+
+        }
+
+      });
     }
 
   });
@@ -79,5 +101,5 @@ const saveResponseBodyToFile = function() {
 
 
 // DRIVER CODE
-saveResponseBodyToFile(request);
+saveNetworkResourceToFile();
 
